@@ -25,8 +25,8 @@ EoM1 = T1 == [m1*L1^2/3 + m2*L2^2/12 + m2*(L1^2 + L2^2/4 + L1*L2*cos(q2))]*q1dd 
 EoM2 = T2 == [m2*L2^2/3 + m2*L1*L2/2*cos(q2)]*q1dd + m2*L2^2*q2dd/3 ...
     + m2*L1*L2*sin(q2)/2*q1d^2 + m2*L2/2*g*cos(q1+q2) + c2*q2d;
 
-T1_init = double(subs(EoM1, [q1 q1d q2 q2d q1dd q2dd], [xe' 0 0]));
-T2_init = double(subs(EoM2, [q1 q1d q2 q2d q1dd q2dd], [xe' 0 0]));
+T1_init = solve(subs(EoM1, [q1 q1d q2 q2d q1dd q2dd], [xe' 0 0]));
+T2_init = solve(subs(EoM2, [q1 q1d q2 q2d q1dd q2dd], [xe' 0 0]));
 
 qdd = solve([EoM1; EoM2], [q1dd; q2dd]);
 Xd = [q1d; qdd.q1dd; q2d; qdd.q2dd];
