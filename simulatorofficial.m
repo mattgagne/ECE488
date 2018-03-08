@@ -1,8 +1,8 @@
 function [Xd] = simulatorofficial(time,x,U,L1,L2,m1,m2,g,c1,c2)
 
-    x
+    % x
 
-    syms q1dd q2dd;
+    % syms q1dd q2dd;
     T1 = U(1);
     T2 = U(2);
     q1 = x(1);
