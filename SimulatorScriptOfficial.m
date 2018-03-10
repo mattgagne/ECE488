@@ -17,12 +17,12 @@ q=qout(end,[1,3])';
     
 % Additions for testing
 y_des = [deg2rad(-50) deg2rad(0)]';
-ts = 0:0.001:10;
+ts = 0:0.001:5;
 e_prev = q - y_des;
 % End of additions
 
 
-for t=0.001:0.001:10
+for t=0.001:0.001:5
    t
    %check if robot meets requirements
 

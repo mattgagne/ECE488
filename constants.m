@@ -14,4 +14,5 @@ my_time=0;
 my_angle_vector=[0 0]';
 my_state_estimate_vector=[0 0 0 0]';
 my_some_variable_a=0;
-my_some_variable_b=0;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+my_some_variable_b=0;
+deltaXe_prev = x_0;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

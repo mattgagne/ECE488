@@ -1,6 +1,8 @@
-U = [0 0]';
+% U = [0 0]';
 
 % determine values at equilibrium point for linearization
+% q1_equ = x_0(1); 
+% q2_equ = x_0(3);
 q1_equ = y_des(1);
 q2_equ = y_des(2);
 q1d_equ = 0;
@@ -41,8 +43,8 @@ C = [1, 0, 0, 0;
 D = zeros(2,2);
 
 % TODO: add estimator
-% Pe = [-4 -4.2 -4.3 -4.4];
-% F = (place(A', C', Pe))';
+Pe = 2*[-4 -4.2 -4.3 -4.4];
+F = (place(A', C', Pe))';
 
 % determine state feedback and regulator
 Aaug = [A zeros(4,2); C zeros(2,2)];
@@ -55,10 +57,14 @@ K2 = K(:,5:6);
 
 deltaT = 0.001;
 deltaY = q(:,end) - y_equ;
-deltaX = qout(end,:)' - x_equ;
+%deltaX = qout(end,:)' - x_equ;
 e = e_prev + deltaT*(deltaY - delta_y_des);
 
 % Plant Input
-U = -K1*deltaX - K2*e + T_equ;
-
+U = -K1*deltaXe_prev - K2*e + T_equ; 
 e_prev = e;
+
+% Estimotor
+d_deltaXe = (A-F*C)*deltaXe_prev + F*deltaY + B*U;
+deltaXe_prev = deltaXe_prev + d_deltaXe*deltaT; 
+
