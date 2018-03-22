@@ -25,7 +25,7 @@ legend('q1','q2')
 
 x02=[pi/2 0 0 0]';
 yout2=[0 0];
-for t=0:0.001:0.002 %2
+for t=0:0.001:2
 [tout2,xout2]=ode45(@(t,x)simulatorofficial(t,x,[sin(t);cos(t)],l1,l2,m1,m2,g,c1,c2),[t t+0.001],x02); %put your plant here
 y2=[1 0 0 0;0 0 1 0]*xout2(end,:)';
 yout2=[yout2;y2'];

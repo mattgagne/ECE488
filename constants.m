@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%You NEED these constants%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c1=0.001;%link 1 friction coeffecient
 c2=0.001;%link 2 friction coeffecient
-l1=0.2; %link 1 length
+l1=0.1; %link 1 length
 l2=0.1; %link 2 length
 m1=1;%link 1 mass
 m2=1;%link 2 mass
@@ -17,4 +17,5 @@ my_some_variable_a=0;
 my_some_variable_b=0;
 my_goalpoints = [0.1 0.2; 0.2 0.2; 0.2 0.1; 0.1 0.1];
 %my_waypoints;
-deltaXe_prev = x_0;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+x_lin = x_0;
+deltaXe_prev = x_0 - x_lin;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
