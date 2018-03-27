@@ -17,12 +17,12 @@ q=qout(end,[1,3])';
     
 % Additions for testing
 %y_des = [Bth1 Bth2]';
-ts = 0:0.001:3;
+ts = 0:0.001:8;
 %e_prev = q - y_des;
 % End of additions
 
 
-for t=0.001:0.001:3
+for t=0.001:0.001:8
    t
    %check if robot meets requirements
 
@@ -64,7 +64,7 @@ for i = 1:50:size(q,2)
     plot([x1,x2],[y1,y2],'b','LineWidth',2);
     % Plot target
     %plot([0 l1*cos(y_des(1))], [0 l1*sin(y_des(1))],'black');
-    %plot([l1*cos(y_des(1)) l1*cos(y_des(1)) + l2*cos(y_des(1) + y_des(2))], [l1*sin(y_des(1)) l1*sin(y_des(1)) + l2*sin(y_des(1) + y_des(2))],'black');
+    %plot([l1*cos(y_des(0)) l1*cos(y_des(1)) + l2*cos(y_des(1) + y_des(2))], [l1*sin(y_des(1)) l1*sin(y_des(1)) + l2*sin(y_des(1) + y_des(2))],'black');
     scatter(my_goalpoints(:,1),my_goalpoints(:,2),15,'filled');
     plot(my_bounds(:,1),my_bounds(:,2),'--r','LineWidth',2);
     xlim(1*[0,0.22]);

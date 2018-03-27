@@ -1,10 +1,10 @@
 % U = [0 0]';
 
 % detremine y_des
-if (abs(q(2,size(q,2)) - my_waypoints(2,w_pt)) < 0.05)
-    w_pt = w_pt + 1;
+if (abs(q(2,size(q,2)) - my_waypts_ang(2,waypt)) < 0.1)
+    waypt = waypt + 1;
 end
-y_des = my_waypoints(:,w_pt);
+y_des = my_waypts_ang(:,waypt);
 
 % determine values at equilibrium point for linearization
 q1_equ = x_0(1); 
@@ -62,12 +62,12 @@ Aaug = [A zeros(4,2); C zeros(2,2)];
 Baug = [B; zeros(2,2)];
 
 Q = [1 0 0 0 0 0;
-    0 1 0 0 0 0;
+    0 0.01 0 0 0 0;
     0 0 1 0 0 0;
-    0 0 0 1 0 0;
-    0 0 0 0 100 0;
-    0 0 0 0 0 100];
-R = eye(2);
+    0 0 0 0.01 0 0;
+    0 0 0 0 10000 0;
+    0 0 0 0 0 10000];
+R = 0.2*eye(2);
 [K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
 K1 = K(:,1:4);
 K2 = K(:,5:6);
@@ -85,7 +85,7 @@ deltaXe_prev = deltaXe_prev + d_deltaXe*deltaT;
 
 % Plant Input
 U = -K1*deltaXe_prev - K2*e + T_equ;
-% U = -K1*deltaX -K2*e + T_equ; 
+%U = -K1*deltaX -K2*e + T_equ; 
 e_prev = e;
 
 
