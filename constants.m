@@ -10,8 +10,9 @@ g=3.7;%acceleration due to gravity m/s^2 on mars
 pA = [0.1 0.2];
 pB = [0.2 0.2]; 
 pC = [0.2 0.1]; pD = [0.1 0.1];
-my_waypts_xy = [linspace( pA(1), pB(1), 5 ) linspace( pB(1), pC(1), 5 ) linspace( pC(1), pD(1), 5 ) linspace( pD(1), pA(1), 5 );
-                linspace( pA(2), pB(2), 5 ) linspace( pB(2), pC(2), 5 ) linspace( pC(2), pD(2), 5 ) linspace( pD(2), pA(2), 5 )];
+num_waypts = 5;
+my_waypts_xy = [linspace( pA(1), pB(1), num_waypts ) linspace( pB(1), pC(1), num_waypts ) linspace( pC(1), pD(1), num_waypts ) linspace( pD(1), pA(1), num_waypts );
+                linspace( pA(2), pB(2), num_waypts ) linspace( pB(2), pC(2), num_waypts ) linspace( pC(2), pD(2), num_waypts ) linspace( pD(2), pA(2), num_waypts )];
 for i = 1:size(my_waypts_xy,2)
     [my_waypts_ang(1,i) my_waypts_ang(2,i)] = getAngle(my_waypts_xy(1,i), my_waypts_xy(2,i), l1, l2);
 end

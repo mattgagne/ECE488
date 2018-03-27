@@ -74,7 +74,7 @@ K2 = K(:,5:6);
 
 deltaT = 0.001;
 deltaY = q(:,end) - y_equ;
-% deltaY = deltaY + std.*randn(2,1);
+deltaY = deltaY + std.*randn(2,1);
 deltaX = qout(end,:)' - x_equ;
 e = e_prev + deltaT*(deltaY - delta_y_des);
 
