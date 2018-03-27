@@ -23,7 +23,7 @@ ts = 0:0.001:8;
 
 
 for t=0.001:0.001:8
-   t
+   t;
    %check if robot meets requirements
 
    RobotControllerScript %your script is used here.

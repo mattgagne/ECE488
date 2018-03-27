@@ -7,6 +7,7 @@ l2=0.0879; %link 2 length
 m1=2.5*l1;%link 1 mass
 m2=2.5*l2;%link 2 mass
 g=3.7;%acceleration due to gravity m/s^2 on mars
+measurement_std_dev = deg2rad(0.333);
 pA = [0.1 0.2];
 pB = [0.2 0.2]; 
 pC = [0.2 0.1]; pD = [0.1 0.1];

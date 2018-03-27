@@ -1,7 +1,19 @@
 % U = [0 0]';
+y_measured = q(:,end) + measurement_std_dev.*randn(2,1);
+x_endpoint = l1*cos(y_measured(1)) + l2*cos(y_measured(1) + y_measured(2));
+y_endpoint = l1*sin(y_measured(1)) + l2*sin(y_measured(1) + y_measured(2));
+xy_endpoint_measured = [x_endpoint; y_endpoint];
+
+isMajorWaypoint = (mod(waypt,num_waypts) == 0);
+
+if isMajorWaypoint
+    iteration_threshold = 0.002;
+else
+    iteration_threshold = 0.01;
+end
 
 % detremine y_des
-if (abs(q(2,size(q,2)) - my_waypts_ang(2,waypt)) < 0.1)
+if norm(my_waypts_xy(:,waypt) - xy_endpoint_measured) < iteration_threshold
     waypt = waypt + 1;
 end
 y_des = my_waypts_ang(:,waypt);
@@ -49,9 +61,8 @@ C = [1, 0, 0, 0;
 D = zeros(2,2);
 
 % TODO: add estimator
-std = deg2rad(0.333);
-Qe = std^2*eye(4);
-Re = std^2*eye(2);
+Qe = measurement_std_dev^2*eye(4);
+Re = measurement_std_dev^2*eye(2);
 
 [F,P_est,eig_est] = lqr(A,B,Qe,Re);
 F = place(A', C', [-1000, -1001, -1002, -999]);
@@ -73,8 +84,7 @@ K1 = K(:,1:4);
 K2 = K(:,5:6);
 
 deltaT = 0.001;
-deltaY = q(:,end) - y_equ;
-deltaY = deltaY + std.*randn(2,1);
+deltaY = y_measured - y_equ;
 deltaX = qout(end,:)' - x_equ;
 e = e_prev + deltaT*(deltaY - delta_y_des);
 
