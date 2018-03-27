@@ -16,13 +16,13 @@ U=tau_0;
 q=qout(end,[1,3])';
     
 % Additions for testing
-y_des = [deg2rad(-80) deg2rad(5)]';
-ts = 0:0.001:8;
-e_prev = q - y_des;
+%y_des = [Bth1 Bth2]';
+ts = 0:0.001:3;
+%e_prev = q - y_des;
 % End of additions
 
 
-for t=0.001:0.001:8
+for t=0.001:0.001:3
    t
    %check if robot meets requirements
 
@@ -60,14 +60,15 @@ for i = 1:50:size(q,2)
     y1 = l1*sin(q(1,i));
     x2 = l1*cos(q(1,i)) + l2*cos(q(1,i) + q(2,i));
     y2 = l1*sin(q(1,i)) + l2*sin(q(1,i) + q(2,i));
-    plot([0,x1],[0,y1],'r');
-    plot([x1,x2],[y1,y2],'b');
+    plot([0,x1],[0,y1],'r','LineWidth',2);
+    plot([x1,x2],[y1,y2],'b','LineWidth',2);
     % Plot target
-    plot([0 l1*cos(y_des(1))], [0 l1*sin(y_des(1))],'black');
-    plot([l1*cos(y_des(1)) l1*cos(y_des(1)) + l2*cos(y_des(1) + y_des(2))], [l1*sin(y_des(1)) l1*sin(y_des(1)) + l2*sin(y_des(1) + y_des(2))],'black');
+    %plot([0 l1*cos(y_des(1))], [0 l1*sin(y_des(1))],'black');
+    %plot([l1*cos(y_des(1)) l1*cos(y_des(1)) + l2*cos(y_des(1) + y_des(2))], [l1*sin(y_des(1)) l1*sin(y_des(1)) + l2*sin(y_des(1) + y_des(2))],'black');
     scatter(my_goalpoints(:,1),my_goalpoints(:,2),15,'filled');
-    xlim(1*[-0.22,0.22]);
-    ylim(1*[-0.22,0.22]);
+    plot(my_bounds(:,1),my_bounds(:,2),'--r','LineWidth',2);
+    xlim(1*[0,0.22]);
+    ylim(1*[0,0.22]);
     if (makemovie) writeVideo(vidObj, getframe(gca)); end
 end
 

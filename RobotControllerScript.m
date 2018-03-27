@@ -1,5 +1,11 @@
 % U = [0 0]';
 
+% detremine y_des
+if (abs(q(2,size(q,2)) - my_waypoints(2,w_pt)) < 0.05)
+    w_pt = w_pt + 1;
+end
+y_des = my_waypoints(:,w_pt);
+
 % determine values at equilibrium point for linearization
 q1_equ = x_0(1); 
 q2_equ = x_0(3);
@@ -48,33 +54,38 @@ Qe = std^2*eye(4);
 Re = std^2*eye(2);
 
 [F,P_est,eig_est] = lqr(A,B,Qe,Re);
+F = place(A', C', [-1000, -1001, -1002, -999]);
 F = F';
 
 % determine state feedback and regulator
 Aaug = [A zeros(4,2); C zeros(2,2)];
 Baug = [B; zeros(2,2)];
 
-Q = [1 0 0 0;
-    0 1 0 0;
-    0 0 1 0;
-    0 0 0 1];
+Q = [1 0 0 0 0 0;
+    0 1 0 0 0 0;
+    0 0 1 0 0 0;
+    0 0 0 1 0 0;
+    0 0 0 0 100 0;
+    0 0 0 0 0 100];
 R = eye(2);
-[K1,P_lqr,eig_lqr] = lqr(A,B,Q,R);
-P = 1.3*[-2.0, -2.1, -2.2, -2.3, -2.4, -2.5];
-K = place(Aaug, Baug, P);
+[K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
+K1 = K(:,1:4);
 K2 = K(:,5:6);
 
 deltaT = 0.001;
 deltaY = q(:,end) - y_equ;
-%deltaX = qout(end,:)' - x_equ;
+% deltaY = deltaY + std.*randn(2,1);
+deltaX = qout(end,:)' - x_equ;
 e = e_prev + deltaT*(deltaY - delta_y_des);
+
+% Estimator
+d_deltaXe = (A-F*C)*deltaXe_prev + F*deltaY + B*(U-T_equ);
+deltaXe_prev = deltaXe_prev + d_deltaXe*deltaT; 
+
 
 % Plant Input
 U = -K1*deltaXe_prev - K2*e + T_equ;
-%U = -K1*deltaX -K2*e + T_equ; 
+% U = -K1*deltaX -K2*e + T_equ; 
 e_prev = e;
 
-% Estimator
-d_deltaXe = (A-F*C)*deltaXe_prev + F*deltaY + B*U;
-deltaXe_prev = deltaXe_prev + d_deltaXe*deltaT; 
 
