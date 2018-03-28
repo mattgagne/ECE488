@@ -26,9 +26,12 @@ my_state_estimate_vector=[0 0 0 0]';
 my_some_variable_a=0;
 my_some_variable_b=0;
 my_goalpoints = [pA; pB; pC; pD]; % [A B C D]
-waypt = 1;
+waypt = 2;
 my_bounds = [0 0; 0 0.22; 0.22 0.22; 0.22 0; 0 0];
 x_lin = x_0;
 deltaXe_prev = x_0 - x_lin;
 e_prev = [x_0(1); x_0(3)] - my_waypts_ang(:,1);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+default_time_steps_to_wait = 0.5/0.001;
+current_time_steps_waited = default_time_steps_to_wait;
+useSettlingController = false;

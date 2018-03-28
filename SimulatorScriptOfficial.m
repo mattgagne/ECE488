@@ -1,6 +1,8 @@
 %this is the general format of the simulator script
-close all
-clear all
+format long;
+close all;
+clear all;
+clc;
 constants;
 %constants2;
 
@@ -22,8 +24,11 @@ ts = 0:0.001:8;
 % End of additions
 
 
-for t=0.001:0.001:8
+for t=0.001:0.001:12
    t;
+   if waypt > size(my_waypts_ang,2)
+       break;
+   end
    %check if robot meets requirements
 
    RobotControllerScript %your script is used here.
@@ -38,11 +43,11 @@ for t=0.001:0.001:8
  %calculate energy/time, etc...
 
  %% Additions for visualization
- figure(1);
- subplot(2,1,1);
- plot(ts, q(1,:));
- subplot(2,1,2);
- plot(ts, q(2,:));
+%  figure(1);
+%  subplot(2,1,1);
+%  plot(ts, q(1,:));
+%  subplot(2,1,2);
+%  plot(ts, q(2,:));
  
  
 %% Create AVI object
@@ -69,6 +74,7 @@ for i = 1:50:size(q,2)
     plot(my_bounds(:,1),my_bounds(:,2),'--r','LineWidth',2);
     xlim(1*[0,0.22]);
     ylim(1*[0,0.22]);
+    title(t);
     if (makemovie) writeVideo(vidObj, getframe(gca)); end
 end
 

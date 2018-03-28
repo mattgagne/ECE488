@@ -1,4 +1,5 @@
 % U = [0 0]';
+
 y_measured = q(:,end) + measurement_std_dev.*randn(2,1);
 x_endpoint = l1*cos(y_measured(1)) + l2*cos(y_measured(1) + y_measured(2));
 y_endpoint = l1*sin(y_measured(1)) + l2*sin(y_measured(1) + y_measured(2));
@@ -12,15 +13,51 @@ else
     iteration_threshold = 0.01;
 end
 
-% detremine y_des
-if norm(my_waypts_xy(:,waypt) - xy_endpoint_measured) < iteration_threshold
-    waypt = waypt + 1;
+if ~(useSettlingController) && norm(my_waypts_xy(:,waypt) - xy_endpoint_measured) <= 0.0005 && isMajorWaypoint
+    e_prev
+
+    % e_prev = deltaY - delta_y_des;
+    useSettlingController = true;
 end
-y_des = my_waypts_ang(:,waypt);
+    
+% detremine y_des
+if norm(my_waypts_xy(:,waypt) - xy_endpoint_measured) <= iteration_threshold
+    if isMajorWaypoint
+%         if ~(useSettlingController)
+%             e_prev
+%             
+%             % e_prev = deltaY - delta_y_des;
+%             useSettlingController = true;
+%         end
+        if current_time_steps_waited == 20
+            useSettlingController = false;
+            waypt = waypt + 1;
+            e_prev = 0;
+        end
+        current_time_steps_waited = current_time_steps_waited + 1;
+    else
+        waypt = waypt + 1;
+        e_prev = 0;
+        % when iterate to major waypoint reset counter
+        if (mod(waypt,num_waypts) == 0)
+            current_time_steps_waited = 0;
+        end
+    end
+    
+else
+    if isMajorWaypoint
+        % if we leave the require distance, reset step counter
+        current_time_steps_waited = 0;
+    end
+end
+
+if (waypt <= size(my_waypts_ang,2))
+    y_des = my_waypts_ang(:,waypt);
+end
 
 % determine values at equilibrium point for linearization
-q1_equ = x_0(1); 
-q2_equ = x_0(3);
+q1_equ = my_waypts_ang(1,waypt-1); 
+q2_equ = my_waypts_ang(2,waypt-1);
 % q1_equ = y_des(1);
 % q2_equ = y_des(2);
 q1d_equ = 0;
@@ -72,13 +109,26 @@ F = F';
 Aaug = [A zeros(4,2); C zeros(2,2)];
 Baug = [B; zeros(2,2)];
 
-Q = [1 0 0 0 0 0;
-    0 0.01 0 0 0 0;
-    0 0 1 0 0 0;
-    0 0 0 0.01 0 0;
-    0 0 0 0 10000 0;
-    0 0 0 0 0 10000];
-R = 0.2*eye(2);
+if useSettlingController
+    Q = [1 0 0 0 0 0;
+        0 0.01 0 0 0 0;
+        0 0 1 0 0 0;
+        0 0 0 0.01 0 0;
+        0 0 0 0 1000 0;
+        0 0 0 0 0 1000];
+    R = 0.2*eye(2);
+else
+    Q = [1 0 0 0 0 0;
+        0 0.01 0 0 0 0;
+        0 0 1 0 0 0;
+        0 0 0 0.01 0 0;
+        0 0 0 0 10000 0;
+        0 0 0 0 0 10000];
+    R = 0.2*eye(2);
+end
+
+
+
 [K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
 K1 = K(:,1:4);
 K2 = K(:,5:6);
