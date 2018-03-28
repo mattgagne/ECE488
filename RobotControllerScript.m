@@ -1,26 +1,61 @@
 % U = [0 0]';
+
+y_true = q(:,end);
 y_measured = q(:,end) + measurement_std_dev.*randn(2,1);
+
+x_endpoint_true = l1*cos(y_true(1)) + l2*cos(y_true(1) + y_true(2));
+y_endpoint_true = l1*sin(y_true(1)) + l2*sin(y_true(1) + y_true(2));
+xy_endpoint_true = [x_endpoint_true; y_endpoint_true];
+
 x_endpoint = l1*cos(y_measured(1)) + l2*cos(y_measured(1) + y_measured(2));
 y_endpoint = l1*sin(y_measured(1)) + l2*sin(y_measured(1) + y_measured(2));
 xy_endpoint_measured = [x_endpoint; y_endpoint];
 
-isMajorWaypoint = (mod(waypt,num_waypts) == 0);
+isMajorWaypoint = (mod(waypt,num_waypts+1) == 0);
 
 if isMajorWaypoint
-    iteration_threshold = 0.002;
+    iteration_threshold = 0.001;
+    required_timesteps_to_wait = 0.5/0.001;
+elseif mod(waypt+1,num_waypts+1) == 0
+    iteration_threshold = 0.001;
+    required_timesteps_to_wait = 0;
+
 else
-    iteration_threshold = 0.01;
+    iteration_threshold = 0.003;
+    required_timesteps_to_wait = 0;
+end
+
+% if isMajorWaypoint
+%     norm(my_waypts_xy(:,waypt) - xy_endpoint_true) * 1000
+% end
+
+if norm(my_waypts_xy(:,waypt) - xy_endpoint_true) < iteration_threshold
+    
+    waited_timesteps = waited_timesteps + 1;
+    
+    if waited_timesteps >= required_timesteps_to_wait 
+        % iterate to next waypoint
+        waypt = waypt + 1
+        isMajorWaypoint = (mod(waypt,num_waypts+1) == 0);
+        e_prev = 0;
+        
+        % break after meeting end condition and stop timer
+        if waypt == (size(my_waypts_ang, 2) + 1)
+            return;
+        end
+    end 
+    
+else
+    % if outside of desired range, zero out step counter
+    waited_timesteps = 0;
 end
 
 % detremine y_des
-if norm(my_waypts_xy(:,waypt) - xy_endpoint_measured) < iteration_threshold
-    waypt = waypt + 1;
-end
 y_des = my_waypts_ang(:,waypt);
 
 % determine values at equilibrium point for linearization
-q1_equ = x_0(1); 
-q2_equ = x_0(3);
+q1_equ = my_waypts_ang(1,waypt-1);
+q2_equ = my_waypts_ang(2,waypt-1); 
 % q1_equ = y_des(1);
 % q2_equ = y_des(2);
 q1d_equ = 0;
@@ -72,16 +107,29 @@ F = F';
 Aaug = [A zeros(4,2); C zeros(2,2)];
 Baug = [B; zeros(2,2)];
 
-Q = [1 0 0 0 0 0;
-    0 0.01 0 0 0 0;
-    0 0 1 0 0 0;
-    0 0 0 0.01 0 0;
-    0 0 0 0 10000 0;
-    0 0 0 0 0 10000];
-R = 0.2*eye(2);
-[K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
-K1 = K(:,1:4);
-K2 = K(:,5:6);
+if isMajorWaypoint
+    Q = [1 0 0 0 0 0;
+        0 0.01 0 0 0 0;
+        0 0 1 0 0 0;
+        0 0 0 0.01 0 0;
+        0 0 0 0 10000 0;
+        0 0 0 0 0 10000];
+    R = 5*eye(2);
+    [K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
+    K1 = K(:,1:4);
+    K2 = K(:,5:6);
+else
+    Q = [1 0 0 0 0 0;
+        0 0.01 0 0 0 0;
+        0 0 1 0 0 0;
+        0 0 0 0.01 0 0;
+        0 0 0 0 10000 0;
+        0 0 0 0 0 10000];
+    R = 0.2*eye(2);
+    [K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
+    K1 = K(:,1:4);
+    K2 = K(:,5:6);
+end
 
 deltaT = 0.001;
 deltaY = y_measured - y_equ;
@@ -95,6 +143,8 @@ deltaXe_prev = deltaXe_prev + d_deltaXe*deltaT;
 
 % Plant Input
 U = -K1*deltaXe_prev - K2*e + T_equ;
+
+
 %U = -K1*deltaX -K2*e + T_equ; 
 e_prev = e;
 

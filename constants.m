@@ -12,8 +12,8 @@ pA = [0.1 0.2];
 pB = [0.2 0.2]; 
 pC = [0.2 0.1]; pD = [0.1 0.1];
 num_waypts = 5;
-my_waypts_xy = [linspace( pA(1), pB(1), num_waypts ) linspace( pB(1), pC(1), num_waypts ) linspace( pC(1), pD(1), num_waypts ) linspace( pD(1), pA(1), num_waypts );
-                linspace( pA(2), pB(2), num_waypts ) linspace( pB(2), pC(2), num_waypts ) linspace( pC(2), pD(2), num_waypts ) linspace( pD(2), pA(2), num_waypts )];
+my_waypts_xy = [linspace( pA(1), pB(1), num_waypts ) pB(1) linspace( pB(1), pC(1), num_waypts ) pC(1) linspace( pC(1), pD(1), num_waypts ) pD(1) linspace( pD(1), pA(1), num_waypts ) pA(1);
+                linspace( pA(2), pB(2), num_waypts ) pB(2) linspace( pB(2), pC(2), num_waypts ) pC(2) linspace( pC(2), pD(2), num_waypts ) pD(2) linspace( pD(2), pA(2), num_waypts ) pA(2)];
 for i = 1:size(my_waypts_xy,2)
     [my_waypts_ang(1,i) my_waypts_ang(2,i)] = getAngle(my_waypts_xy(1,i), my_waypts_xy(2,i), l1, l2);
 end
@@ -26,9 +26,10 @@ my_state_estimate_vector=[0 0 0 0]';
 my_some_variable_a=0;
 my_some_variable_b=0;
 my_goalpoints = [pA; pB; pC; pD]; % [A B C D]
-waypt = 1;
+waypt = 2;
 my_bounds = [0 0; 0 0.22; 0.22 0.22; 0.22 0; 0 0];
 x_lin = x_0;
 deltaXe_prev = x_0 - x_lin;
 e_prev = [x_0(1); x_0(3)] - my_waypts_ang(:,1);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+waited_timesteps = 0;
