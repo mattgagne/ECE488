@@ -33,3 +33,4 @@ deltaXe_prev = x_0 - x_lin;
 e_prev = [x_0(1); x_0(3)] - my_waypts_ang(:,1);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 waited_timesteps = 0;
+xy_endpoint_estimated = [0;0];

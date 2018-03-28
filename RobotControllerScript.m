@@ -29,7 +29,7 @@ end
 %     norm(my_waypts_xy(:,waypt) - xy_endpoint_true) * 1000
 % end
 
-if norm(my_waypts_xy(:,waypt) - xy_endpoint_true) < iteration_threshold
+if norm(my_waypts_xy(:,waypt) - xy_endpoint_estimated) < iteration_threshold
     
     waited_timesteps = waited_timesteps + 1;
     
@@ -149,3 +149,7 @@ U = -K1*deltaXe_prev - K2*e + T_equ;
 e_prev = e;
 
 
+y_estimated = C*deltaXe_prev + y_equ;
+x_endpoint_estimated = l1*cos(y_estimated(1)) + l2*cos(y_estimated(1) + y_estimated(2));
+y_endpoint_estimated = l1*sin(y_estimated(1)) + l2*sin(y_estimated(1) + y_estimated(2));
+xy_endpoint_estimated = [x_endpoint_estimated; y_endpoint_estimated];
