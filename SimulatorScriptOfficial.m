@@ -75,7 +75,7 @@ for i = 1:125:size(q,2)
     scatter(my_goalpoints(:,1),my_goalpoints(:,2),15,'filled');
     plot(my_bounds(:,1),my_bounds(:,2),'--r','LineWidth',2);
     xlim(1*[0,0.40]);
-    ylim(1*[-.1,0.30]);
+    ylim(1*[-.17,0.23]);
     if (makemovie) writeVideo(vidObj, getframe(gca)); end
 end
 
