@@ -14,7 +14,7 @@ xy_endpoint_measured = [x_endpoint; y_endpoint];
 isMajorWaypoint = (mod(waypt,num_waypts+1) == 0);
 
 if isMajorWaypoint
-    iteration_threshold = 0.001;
+    iteration_threshold = 0.004;
     required_timesteps_to_wait = 0.5/0.001;
 elseif mod(waypt+1,num_waypts+1) == 0
     iteration_threshold = 0.001;
@@ -29,8 +29,11 @@ end
 %     norm(my_waypts_xy(:,waypt) - xy_endpoint_true) * 1000
 % end
 
+if isMajorWaypoint
+    (norm(my_waypts_xy(:,waypt) - xy_endpoint_estimated)) * 1000
+end
+
 if norm(my_waypts_xy(:,waypt) - xy_endpoint_estimated) < iteration_threshold
-    
     waited_timesteps = waited_timesteps + 1;
     
     if waited_timesteps >= required_timesteps_to_wait 
@@ -96,11 +99,11 @@ C = [1, 0, 0, 0;
 D = zeros(2,2);
 
 % TODO: add estimator
-Qe = measurement_std_dev^2*eye(4);
+Qe = 0.1^2*eye(4);
 Re = measurement_std_dev^2*eye(2);
 
 [F,P_est,eig_est] = lqr(A,B,Qe,Re);
-F = place(A', C', [-1000, -1001, -1002, -999]);
+% F = place(A', C', [-1000, -1001, -1002, -999]);
 F = F';
 
 % determine state feedback and regulator
@@ -132,12 +135,12 @@ else
 end
 
 deltaT = 0.001;
-deltaY = y_measured - y_equ;
+deltaY = y_estimated - y_equ;
 deltaX = qout(end,:)' - x_equ;
 e = e_prev + deltaT*(deltaY - delta_y_des);
 
 % Estimator
-d_deltaXe = (A-F*C)*deltaXe_prev + F*deltaY + B*(U-T_equ);
+d_deltaXe = (A-F*C)*deltaXe_prev + F*(y_measured - y_equ) + B*(U-T_equ);
 deltaXe_prev = deltaXe_prev + d_deltaXe*deltaT; 
 
 

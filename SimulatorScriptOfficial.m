@@ -73,8 +73,8 @@ for i = 1:125:size(q,2)
     %plot([l1*cos(y_des(0)) l1*cos(y_des(1)) + l2*cos(y_des(1) + y_des(2))], [l1*sin(y_des(1)) l1*sin(y_des(1)) + l2*sin(y_des(1) + y_des(2))],'black');
     scatter(my_goalpoints(:,1),my_goalpoints(:,2),15,'filled');
     plot(my_bounds(:,1),my_bounds(:,2),'--r','LineWidth',2);
-    xlim(1*[0,0.22]);
-    ylim(1*[0,0.22]);
+    xlim(1*[-.5,0.5]);
+    ylim(1*[-.5,0.5]);
     if (makemovie) writeVideo(vidObj, getframe(gca)); end
 end
 

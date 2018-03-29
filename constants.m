@@ -1,19 +1,23 @@
 %put constant values in this file%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%You NEED these constants%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+density = 0.85;
+length_total = 0.75/density;
+
+
 c1=8;%8;%link 1 friction coeffecient
 c2=8;%6;%link 2 friction coeffecient
-l1=0.2121; %link 1 length
-l2=0.0879; %link 2 length
-m1=2.5*l1;%link 1 mass
-m2=2.5*l2;%link 2 mass
+l1=1/2*length_total; %link 1 length
+l2=1/2*length_total; %link 2 length
+m1=density*l1;%link 1 mass
+m2=density*l2;%link 2 mass
 g=3.7;%acceleration due to gravity m/s^2 on mars
 measurement_std_dev = deg2rad(0.333);
 pA = [0.1 0.2];
 pB = [0.2 0.2]; 
 pC = [0.2 0.1]; pD = [0.1 0.1];
-num_waypts = 5;
-my_waypts_xy = [linspace( pA(1), pB(1), num_waypts ) pB(1) linspace( pB(1), pC(1), num_waypts ) pC(1) linspace( pC(1), pD(1), num_waypts ) pD(1) linspace( pD(1), pA(1), num_waypts ) pA(1);
-                linspace( pA(2), pB(2), num_waypts ) pB(2) linspace( pB(2), pC(2), num_waypts ) pC(2) linspace( pC(2), pD(2), num_waypts ) pD(2) linspace( pD(2), pA(2), num_waypts ) pA(2)];
+num_waypts = 3;
+my_waypts_xy = [logspace( log10(pA(1)), log10(pB(1)), num_waypts ) pB(1) logspace( log10(pB(1)), log10(pC(1)), num_waypts ) pC(1) logspace( log10(pC(1)), log10(pD(1)), num_waypts ) pD(1) logspace( log10(pD(1)), log10(pA(1)), num_waypts ) pA(1);
+                logspace( log10(pA(2)), log10(pB(2)), num_waypts ) pB(2) logspace( log10(pB(2)), log10(pC(2)), num_waypts ) pC(2) logspace( log10(pC(2)), log10(pD(2)), num_waypts ) pD(2) logspace( log10(pD(2)), log10(pA(2)), num_waypts ) pA(2)];
 for i = 1:size(my_waypts_xy,2)
     [my_waypts_ang(1,i) my_waypts_ang(2,i)] = getAngle(my_waypts_xy(1,i), my_waypts_xy(2,i), l1, l2);
 end
@@ -34,3 +38,4 @@ e_prev = [x_0(1); x_0(3)] - my_waypts_ang(:,1);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 waited_timesteps = 0;
 xy_endpoint_estimated = [0;0];
+y_estimated = [0;0];
