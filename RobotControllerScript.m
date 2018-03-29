@@ -14,24 +14,17 @@ xy_endpoint_measured = [x_endpoint; y_endpoint];
 isMajorWaypoint = (mod(waypt,num_waypts+1) == 0);
 
 if isMajorWaypoint
-    iteration_threshold = 0.004;
+    iteration_threshold = 0.001;
     required_timesteps_to_wait = 0.5/0.001;
 elseif mod(waypt+1,num_waypts+1) == 0
     iteration_threshold = 0.001;
     required_timesteps_to_wait = 0;
 
 else
-    iteration_threshold = 0.003;
+    iteration_threshold = 0.01;
     required_timesteps_to_wait = 0;
 end
 
-% if isMajorWaypoint
-%     norm(my_waypts_xy(:,waypt) - xy_endpoint_true) * 1000
-% end
-
-if isMajorWaypoint
-    (norm(my_waypts_xy(:,waypt) - xy_endpoint_estimated)) * 1000
-end
 
 if norm(my_waypts_xy(:,waypt) - xy_endpoint_estimated) < iteration_threshold
     waited_timesteps = waited_timesteps + 1;
@@ -41,6 +34,7 @@ if norm(my_waypts_xy(:,waypt) - xy_endpoint_estimated) < iteration_threshold
         waypt = waypt + 1
         isMajorWaypoint = (mod(waypt,num_waypts+1) == 0);
         e_prev = 0;
+        deltaXe_prev = zeros(4,1);
         
         % break after meeting end condition and stop timer
         if waypt == (size(my_waypts_ang, 2) + 1)
@@ -115,9 +109,9 @@ if isMajorWaypoint
         0 0.01 0 0 0 0;
         0 0 1 0 0 0;
         0 0 0 0.01 0 0;
-        0 0 0 0 10000 0;
-        0 0 0 0 0 10000];
-    R = 5*eye(2);
+        0 0 0 0 100 0;
+        0 0 0 0 0 100];
+    R = 0.2*eye(2);
     [K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
     K1 = K(:,1:4);
     K2 = K(:,5:6);
@@ -126,8 +120,8 @@ else
         0 0.01 0 0 0 0;
         0 0 1 0 0 0;
         0 0 0 0.01 0 0;
-        0 0 0 0 10000 0;
-        0 0 0 0 0 10000];
+        0 0 0 0 1000 0;
+        0 0 0 0 0 1000];
     R = 0.2*eye(2);
     [K,P_lqr,eig_lqr] = lqr(Aaug,Baug,Q,R);
     K1 = K(:,1:4);
