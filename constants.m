@@ -6,8 +6,8 @@ length_total = 0.75/density;
 
 c1=6;%8;%link 1 friction coeffecient
 c2=6;%6;%link 2 friction coeffecient
-l1=3/5*length_total; %link 1 length
-l2=2/5*length_total; %link 2 length
+l1=1/2*length_total; %link 1 length
+l2=1/2*length_total; %link 2 length
 m1=density*l1;%link 1 mass
 m2=density*l2;%link 2 mass
 g=3.7;%acceleration due to gravity m/s^2 on mars
